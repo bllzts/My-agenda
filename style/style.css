@@ -54,7 +54,7 @@ h1 {
   transform: scale(1.05);
 }
 
-/* 🎨 Renk seçici kısmı */
+/* 🎨 Renk seçici */
 .color-selector {
   display: flex;
   gap: 10px;
@@ -139,6 +139,24 @@ h1 {
   cursor: pointer;
   font-weight: bold;
   border: none;
+}
+
+.delete-card {
+  background-color: #f44336;
+  color: #fff;
+  display: block;
+  margin: 15px auto 0 auto;
+  padding: 8px 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+  transition: background-color 0.2s ease;
+}
+
+.delete-card:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
 }
 
 ul {
