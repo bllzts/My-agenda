@@ -19,13 +19,26 @@ function saveToLocalStorage() {
   localStorage.setItem("cards", JSON.stringify(cardsData));
 }
 
+// 📅 Tarihe göre sıralama (artan)
+function sortCards() {
+  cardsData.sort((a, b) => new Date(a.date) - new Date(b.date));
+}
+
+function renderCards() {
+  cardsContainer.innerHTML = "";
+  cardsData.forEach(cardInfo => {
+    const card = createCard(cardInfo);
+    if (cardInfo.pinned) cardsContainer.prepend(card);
+    else cardsContainer.appendChild(card);
+  });
+}
+
 function createCard(cardInfo) {
   const card = document.createElement("div");
   card.classList.add("card");
-  card.setAttribute("draggable", "true");
   card.style.borderColor = cardInfo.color;
 
-  // Pin button
+  // 📌 Pin button
   const pinBtn = document.createElement("button");
   pinBtn.textContent = "📌";
   pinBtn.classList.add("pin-btn");
@@ -35,24 +48,23 @@ function createCard(cardInfo) {
   pinBtn.addEventListener("click", () => {
     pinned = !pinned;
     cardInfo.pinned = pinned;
-    if (pinned) cardsContainer.prepend(card);
-    else cardsContainer.appendChild(card);
     pinBtn.style.backgroundColor = pinned ? "#f44336" : "#ff9800";
+    renderCards();
     saveToLocalStorage();
   });
 
-  // Title (date)
+  // 📅 Title (date)
   const title = document.createElement("h2");
   title.textContent = cardInfo.date;
 
-  // Add task button
+  // ➕ Add task button
   const addButton = document.createElement("button");
   addButton.textContent = "+";
   addButton.classList.add("add-item");
 
-  // Task list
   const ul = document.createElement("ul");
 
+  // Görevleri yükle
   cardInfo.tasks.forEach(task => {
     const li = document.createElement("li");
     li.textContent = task.text;
@@ -97,33 +109,33 @@ function createCard(cardInfo) {
     saveToLocalStorage();
   });
 
+  // ❌ Delete button
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Delete Card";
+  deleteBtn.classList.add("delete-card");
+
+  deleteBtn.addEventListener("click", () => {
+    if (confirm("Are you sure you want to delete this card?")) {
+      cardsData = cardsData.filter(c => c !== cardInfo);
+      saveToLocalStorage();
+      renderCards();
+    }
+  });
+
   card.appendChild(pinBtn);
   card.appendChild(title);
   card.appendChild(addButton);
   card.appendChild(ul);
-
-  // Drag and drop
-  card.addEventListener("dragstart", () => card.classList.add("dragging"));
-  card.addEventListener("dragend", () => {
-    card.classList.remove("dragging");
-    const newOrder = Array.from(cardsContainer.children).map(c =>
-      cardsData.find(cd => cd.date === c.querySelector("h2").textContent)
-    );
-    cardsData = newOrder.filter(Boolean);
-    saveToLocalStorage();
-  });
+  card.appendChild(deleteBtn);
 
   return card;
 }
 
-// Load saved cards
-cardsData.forEach(cardInfo => {
-  const card = createCard(cardInfo);
-  if (cardInfo.pinned) cardsContainer.prepend(card);
-  else cardsContainer.appendChild(card);
-});
+// 💾 LocalStorage'dan yükle
+sortCards();
+renderCards();
 
-// Create new card
+// ➕ Yeni kart oluştur
 button1.addEventListener("click", () => {
   const dateValue = date1.value;
   if (!dateValue) return alert("Please select a date");
@@ -136,31 +148,9 @@ button1.addEventListener("click", () => {
   };
 
   cardsData.push(newCard);
+  sortCards();
   saveToLocalStorage();
-
-  const cardElement = createCard(newCard);
-  cardsContainer.appendChild(cardElement);
+  renderCards();
 
   date1.value = "";
 });
-
-// Drag and drop container
-cardsContainer.addEventListener("dragover", e => {
-  e.preventDefault();
-  const afterElement = getDragAfterElement(cardsContainer, e.clientX);
-  const dragging = document.querySelector(".dragging");
-  if (!dragging) return;
-
-  if (afterElement == null) cardsContainer.appendChild(dragging);
-  else cardsContainer.insertBefore(dragging, afterElement);
-});
-
-function getDragAfterElement(container, x) {
-  const draggableElements = [...container.querySelectorAll(".card:not(.dragging)")];
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = x - box.left - box.width / 2;
-    if (offset < 0 && offset > closest.offset) return { offset: offset, element: child };
-    else return closest;
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
