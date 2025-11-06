@@ -1,12 +1,19 @@
 const button1 = document.querySelector(".button1");
 const date1 = document.querySelector(".date1");
 const cardsContainer = document.querySelector(".cards-container");
+const colorOptions = document.querySelectorAll(".color-option");
 
+let selectedColor = "#4CAF50";
 let cardsData = JSON.parse(localStorage.getItem("cards")) || [];
 
-// Sabit 4 renk
-const cardColors = ["#4CAF50", "#FF9800", "#2196F3", "#9C27B0"];
-let colorIndex = 0;
+// 🎨 Renk seçimi
+colorOptions.forEach(option => {
+  option.addEventListener("click", () => {
+    colorOptions.forEach(o => o.classList.remove("selected"));
+    option.classList.add("selected");
+    selectedColor = option.dataset.color;
+  });
+});
 
 function saveToLocalStorage() {
   localStorage.setItem("cards", JSON.stringify(cardsData));
@@ -99,9 +106,9 @@ function createCard(cardInfo) {
   card.addEventListener("dragstart", () => card.classList.add("dragging"));
   card.addEventListener("dragend", () => {
     card.classList.remove("dragging");
-    const newOrder = Array.from(cardsContainer.children).map(c => {
-      return cardsData.find(cd => cd.date === c.querySelector("h2").textContent);
-    });
+    const newOrder = Array.from(cardsContainer.children).map(c =>
+      cardsData.find(cd => cd.date === c.querySelector("h2").textContent)
+    );
     cardsData = newOrder.filter(Boolean);
     saveToLocalStorage();
   });
@@ -121,15 +128,11 @@ button1.addEventListener("click", () => {
   const dateValue = date1.value;
   if (!dateValue) return alert("Please select a date");
 
-  // Otomatik renk seç
-  const colorValue = cardColors[colorIndex];
-  colorIndex = (colorIndex + 1) % cardColors.length;
-
   const newCard = {
     date: dateValue,
     tasks: [],
     pinned: false,
-    color: colorValue
+    color: selectedColor
   };
 
   cardsData.push(newCard);
@@ -142,7 +145,7 @@ button1.addEventListener("click", () => {
 });
 
 // Drag and drop container
-cardsContainer.addEventListener("dragover", (e) => {
+cardsContainer.addEventListener("dragover", e => {
   e.preventDefault();
   const afterElement = getDragAfterElement(cardsContainer, e.clientX);
   const dragging = document.querySelector(".dragging");
