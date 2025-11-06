@@ -1,4 +1,3 @@
-/* Global body style */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #f6d365, #fda085);
@@ -9,26 +8,22 @@ body {
   padding: 30px 15px;
 }
 
-/* Page title */
 h1 {
   color: #333;
   font-size: 2.5em;
   margin-bottom: 20px;
-  text-align: center;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
 }
 
-/* Input container */
 .input-container {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
-/* Inputs */
-.date1, .category-input {
+.date1 {
   padding: 10px 12px;
   border-radius: 12px;
   border: 1px solid #ccc;
@@ -37,16 +32,9 @@ h1 {
   transition: all 0.2s ease;
 }
 
-.date1:focus, .category-input:focus {
+.date1:focus {
   border-color: #4caf50;
   box-shadow: 0 0 5px rgba(76,175,80,0.5);
-}
-
-/* Buttons */
-.button1, .add-item, .done-btn, .pin-btn {
-  cursor: pointer;
-  transition: all 0.2s ease;
-  font-weight: bold;
 }
 
 .button1 {
@@ -55,6 +43,9 @@ h1 {
   border: none;
   border-radius: 12px;
   padding: 10px 18px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.2s ease;
 }
 
 .button1:hover {
@@ -62,7 +53,6 @@ h1 {
   transform: scale(1.05);
 }
 
-/* Cards container */
 .cards-container {
   display: flex;
   flex-wrap: wrap;
@@ -71,7 +61,6 @@ h1 {
   width: 100%;
 }
 
-/* Single card */
 .card {
   background-color: #fff;
   padding: 20px;
@@ -80,6 +69,8 @@ h1 {
   width: 280px;
   position: relative;
   cursor: grab;
+  border: 6px solid transparent;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:active {
@@ -87,14 +78,12 @@ h1 {
   transform: scale(1.03);
 }
 
-/* Card title */
 .card h2 {
   text-align: center;
   margin-bottom: 10px;
   color: #333;
 }
 
-/* Pin button */
 .pin-btn {
   position: absolute;
   top: 10px;
@@ -104,6 +93,8 @@ h1 {
   border: none;
   padding: 6px 10px;
   border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .pin-btn:hover {
@@ -111,7 +102,6 @@ h1 {
   transform: scale(1.05);
 }
 
-/* Add task button */
 .add-item {
   background-color: #4caf50;
   color: #fff;
@@ -119,9 +109,11 @@ h1 {
   margin: 0 auto 15px auto;
   padding: 10px 15px;
   border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  border: none;
 }
 
-/* Task list */
 ul {
   list-style: none;
   padding: 0;
@@ -142,13 +134,13 @@ li.completed {
   opacity: 0.6;
 }
 
-/* Done button */
 .done-btn {
   background-color: #2196f3;
   color: white;
   border: none;
   border-radius: 10px;
   padding: 5px 10px;
+  cursor: pointer;
 }
 
 .done-btn:hover {
@@ -156,7 +148,6 @@ li.completed {
   transform: scale(1.05);
 }
 
-/* Responsive for mobile */
 @media (max-width: 600px) {
   .card {
     width: 90%;

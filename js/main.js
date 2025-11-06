@@ -1,22 +1,24 @@
 const button1 = document.querySelector(".button1");
 const date1 = document.querySelector(".date1");
-const categoryInput = document.querySelector(".category-input");
 const cardsContainer = document.querySelector(".cards-container");
 
 let cardsData = JSON.parse(localStorage.getItem("cards")) || [];
 
-// Save to localStorage
+// Sabit 4 renk
+const cardColors = ["#4CAF50", "#FF9800", "#2196F3", "#9C27B0"];
+let colorIndex = 0;
+
 function saveToLocalStorage() {
   localStorage.setItem("cards", JSON.stringify(cardsData));
 }
 
-// Create card element
 function createCard(cardInfo) {
   const card = document.createElement("div");
   card.classList.add("card");
   card.setAttribute("draggable", "true");
-  card.style.borderTop = `6px solid ${cardInfo.categoryColor || "#4caf50"}`;
+  card.style.borderColor = cardInfo.color;
 
+  // Pin button
   const pinBtn = document.createElement("button");
   pinBtn.textContent = "📌";
   pinBtn.classList.add("pin-btn");
@@ -32,13 +34,16 @@ function createCard(cardInfo) {
     saveToLocalStorage();
   });
 
+  // Title (date)
   const title = document.createElement("h2");
   title.textContent = cardInfo.date;
 
+  // Add task button
   const addButton = document.createElement("button");
   addButton.textContent = "+";
   addButton.classList.add("add-item");
 
+  // Task list
   const ul = document.createElement("ul");
 
   cardInfo.tasks.forEach(task => {
@@ -73,8 +78,8 @@ function createCard(cardInfo) {
 
     doneBtn.addEventListener("click", () => {
       li.classList.add("completed");
-      const task = cardInfo.tasks.find(t => t.text === taskText);
-      if (task) task.completed = true;
+      const t = cardInfo.tasks.find(t => t.text === taskText);
+      if (t) t.completed = true;
       saveToLocalStorage();
     });
 
@@ -94,11 +99,10 @@ function createCard(cardInfo) {
   card.addEventListener("dragstart", () => card.classList.add("dragging"));
   card.addEventListener("dragend", () => {
     card.classList.remove("dragging");
-    // Update order in localStorage
     const newOrder = Array.from(cardsContainer.children).map(c => {
       return cardsData.find(cd => cd.date === c.querySelector("h2").textContent);
     });
-    cardsData = newOrder;
+    cardsData = newOrder.filter(Boolean);
     saveToLocalStorage();
   });
 
@@ -115,15 +119,17 @@ cardsData.forEach(cardInfo => {
 // Create new card
 button1.addEventListener("click", () => {
   const dateValue = date1.value;
-  const categoryValue = categoryInput.value || "#4caf50";
-
   if (!dateValue) return alert("Please select a date");
+
+  // Otomatik renk seç
+  const colorValue = cardColors[colorIndex];
+  colorIndex = (colorIndex + 1) % cardColors.length;
 
   const newCard = {
     date: dateValue,
     tasks: [],
     pinned: false,
-    categoryColor: categoryValue
+    color: colorValue
   };
 
   cardsData.push(newCard);
@@ -133,7 +139,6 @@ button1.addEventListener("click", () => {
   cardsContainer.appendChild(cardElement);
 
   date1.value = "";
-  categoryInput.value = "";
 });
 
 // Drag and drop container
